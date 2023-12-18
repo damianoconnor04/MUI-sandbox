@@ -6,6 +6,7 @@ import Header from './components/navigation/Header'
 // initial toggleColorMode context
 const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
 
+// base app
 const App = () => {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
@@ -21,7 +22,6 @@ const App = () => {
       }}
     >
       <Header colorMode={colorMode} theme={theme} />
-
     </Box>
   );
 }
@@ -60,7 +60,7 @@ const ToggleColorMode = () => {
     }),
     [mode],
   )
-  // render App
+  // render App with context
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>

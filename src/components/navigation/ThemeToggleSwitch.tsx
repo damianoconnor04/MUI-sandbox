@@ -4,14 +4,17 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import { Theme } from '@mui/material';
 
+// colorMode: object to toggle light/dark mode
+// theme: current MUI theme based on light/dark preference
 interface ThemeToggleSwitchProps {
-  colorMode: { toggleColorMode: () => void };
   theme: Theme;
+  onClick?: () => void;
 }
 
-const ThemeToggleSwitch: React.FC<ThemeToggleSwitchProps> = ({ colorMode, theme }) => {
+// render light/dark toggle button
+const ThemeToggleSwitch: React.FC<ThemeToggleSwitchProps> = ({ theme, onClick }) => {
   return (
-    <IconButton size="large" onClick={colorMode.toggleColorMode} color='inherit'>
+    <IconButton size="large" aria-label='Toggle light or dark mode' onClick={onClick} color='inherit'>
       {theme.palette.mode === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
     </IconButton>
   )
