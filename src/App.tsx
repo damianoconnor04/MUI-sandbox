@@ -1,7 +1,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
-import Header from './components/navigation/Header'
+import Header from './components/Header'
 
 // initial toggleColorMode context
 const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
@@ -15,13 +15,13 @@ const App = () => {
       sx={{
         width: '100%',
         height: '100%',
-        bgcolor: 'background.default',
+        bgcolor: 'background.paper',
         color: 'text.primary',
         transition: 'cubic-bezier(0.4, 0, 0.2, 1)',
         transitionDuration: '150ms'
       }}
     >
-      <Header colorMode={colorMode} theme={theme} />
+      <Header theme={theme} colorMode={colorMode} />
     </Box>
   );
 }
@@ -46,9 +46,21 @@ const ToggleColorMode = () => {
     createTheme({
       palette: {
         mode,
+        primary: {
+          main: '#d9d9d9',
+          ...(mode === 'dark' && { main: '#d9d9d9'}),
+          light: '#c9c9c9',
+          ...(mode === 'dark' && { light: '#3B4252'})
+        },
+        secondary: {
+          main: '#88C0D0',
+          ...(mode === 'dark' && { main: '#88C0D0'})
+        },
         background: {
           default: '#f8f9fB',
-          ...(mode === 'dark' && { default: '#292E39' }),
+          ...(mode === 'dark' && { default: '#2E3440' }),
+          paper: '#efefef',
+          ...(mode === 'dark' && { paper: '#1d1d1d' })
         },
         text: {
           primary: '#1a1a1a',

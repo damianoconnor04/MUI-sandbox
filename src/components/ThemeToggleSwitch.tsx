@@ -14,7 +14,7 @@ interface ThemeToggleSwitchProps {
 // render light/dark toggle button
 const ThemeToggleSwitch: React.FC<ThemeToggleSwitchProps> = ({ theme, onClick }) => {
   return (
-    <IconButton size="large" aria-label='Toggle light or dark mode' onClick={onClick} color='inherit'>
+    <IconButton size="large" aria-label='Toggle light or dark mode' onClick={onClick} sx={{ color: theme.palette.text.primary }}>
       {theme.palette.mode === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
     </IconButton>
   )
