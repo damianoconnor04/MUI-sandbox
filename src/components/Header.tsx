@@ -11,12 +11,12 @@ import Menu from '@mui/material/Menu';
 import MuiDrawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import MoreIcon from '@mui/icons-material/MoreVert';
+import AccountCircle from '@mui/icons-material/AccountCircleOutlined';
+import NotificationsIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import MoreIcon from '@mui/icons-material/MoreHoriz';
 import ThemeToggleSwitch from './ThemeToggleSwitch';
-import logo from './Leap-Logo.svg'
+import logoWhite from './Leap-Logo-White.svg';
+import logoBlack from './Leap-Logo-Black.svg';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -24,24 +24,25 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography'
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
+import SellIcon from '@mui/icons-material/Sell';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import DescriptionIcon from '@mui/icons-material/Description';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 // search container styling
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.primary.main, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.25),
-  },
-  marginLeft: 0,
+  '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.25) },
+  transition: 'background 100ms linear',
+  margin: 0,
   width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: 8,
-    width: 'auto',
-  },
+  [theme.breakpoints.up('sm')]: { width: 'auto' },
 }));
 // search icon styling
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -68,7 +69,36 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-// drawer styling
+// padding styling
+const BottomPadding = styled('div')(({ theme }) => ({
+  position: 'absolute',
+  bottom: 9999,
+  height: '16px',
+  width: '100%',
+  backgroundColor: theme.palette.background.default,
+  transition: 'background 0.2s ease',
+  [theme.breakpoints.up('sm')]: { bottom: 0 },
+}))
+const RightPadding = styled('div')(({ theme }) => ({
+  height: '100%',
+  width: 0,
+  backgroundColor: theme.palette.background.default,
+  transition: 'background 0.2s ease',
+  [theme.breakpoints.up('sm')]: { width: '16px' },
+}))
+
+// body styling
+const Main = styled('main')(({ theme }) => ({
+  flexGrow: 1,
+  marginTop: '64px',
+  backgroundColor: theme.palette.background.paper,
+  borderTopLeftRadius: '8px',
+  transition: 'background 0.2s ease',
+  [theme.breakpoints.up('sm')]: { borderRadius: '8px' },
+  [theme.breakpoints.up('sm')]: { borderRadius: '8px' },
+}))
+
+// drawer styling & components
 const drawerWidth = 240;
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -80,9 +110,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open }) => ({
+const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open' })<AppBarProps>(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
@@ -106,15 +134,17 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     ...(open && {
       ...openedMixin(theme),
       '& .MuiDrawer-paper': openedMixin(theme),
+      transition: 'background 0.2s ease',
     }),
     ...(!open && {
       ...closedMixin(theme),
       '& .MuiDrawer-paper': closedMixin(theme),
+      transition: 'background 0.2s ease'
     }),
   }),
 );
 
-// drawer functions
+// drawer width transitions
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
   transition: theme.transitions.create('width', {
@@ -139,7 +169,6 @@ interface HeaderProps {
   theme: Theme;
   colorMode: { toggleColorMode: () => void };
 }
-
 const Header: React.FC<HeaderProps> = ({ theme, colorMode }) => {
   // state variables & booleans
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -149,7 +178,7 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode }) => {
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
-  // keep track of theme state
+  // keep track of theme mode
   React.useEffect(() => { setIsDark(theme.palette.mode === 'dark' ? true : false) }, [theme.palette.mode])
 
   // interactivity functions
@@ -161,6 +190,18 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode }) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose()
+  }
+
+  // client/candidate account view
+  const [accountType, setAccountType] = React.useState<string>('Candidate')
+  const [alert, setAlert] = React.useState<boolean>(false)
+  const handleSwitchAccount = () => {
+    setAlert(true)
+    setAccountType((prevState) => prevState === 'Candidate' ? 'Client' : 'Candidate')
+  }
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') return
+    setAlert(false)
   }
 
   // desktop user pop-up menu
@@ -182,7 +223,8 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode }) => {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
+      <MenuItem onClick={handleSwitchAccount}>Switch accounts</MenuItem>
     </Menu>
   );
 
@@ -207,10 +249,10 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode }) => {
       <MenuItem>
         <IconButton
           size='large'
-          aria-label='show 17 new notifications'
+          aria-label='show new notifications'
           color='inherit'
         >
-          <Badge badgeContent={17} color='error'>
+          <Badge badgeContent={0} color='error'>
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -234,13 +276,13 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode }) => {
       </MenuItem>
     </Menu>
   );
+
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
+    <Box sx={{ display: 'flex', height: '100%', backgroundColor: theme.palette.background.default, transition: 'background 0.2s ease' }}>
       {/* top navigation */}
-      <AppBar position="fixed" open={open} enableColorOnDark elevation={0}>
-        <Toolbar disableGutters sx={{ bgcolor: theme.palette.background.default }}>
-          
+      <AppBar position="fixed" open={open} enableColorOnDark elevation={0} sx={{ backgroundColor: theme.palette.background.default, transition: 'background 0.2s ease' }}>
+        <Toolbar disableGutters>
+
           {/* open menu btn */}
           <Box sx={open ? { padding: 0 } : { padding: 1 }}>
             <IconButton
@@ -248,20 +290,23 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode }) => {
               color='inherit'
               aria-label='open drawer'
               onClick={handleDrawerOpen}
-              sx={{ ...(open && { display: 'none' }), color: theme.palette.text.primary }}
+              sx={{ ...(open && { display: 'none' }), color: theme.palette.text.primary, transition: 'color 0.2s ease' }}
             >
               <MenuIcon />
             </IconButton>
           </Box>
 
           {/* logo */}
-          <Box component='img' alt='LEAP Logo' src={logo}
+          <Box component='img' alt='LEAP Logo' src={isDark ? logoWhite : logoBlack}
             sx={{
               padding: 0,
               height: 40,
               [theme.breakpoints.down('sm')]: { display: 'none' },
             }}
           />
+
+          {/* spacing */}
+          <Box sx={{ flexGrow: 1 }} />
 
           {/* search box */}
           <Search>
@@ -273,31 +318,27 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode }) => {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
-          
-          {/* spacing */}
-          <Box sx={{ flexGrow: 1 }} />
 
           {/* desktop tools */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, mx: 2 }}>
-            <IconButton size='large' aria-label='show 17 new notifications' sx={{ color: theme.palette.text.primary }}>
-              <Badge badgeContent={17} color='error'>
+            <IconButton size='medium' aria-label='show new notifications' sx={{ color: theme.palette.text.primary, transition: 'color 0.2s ease' }}>
+              <Badge badgeContent={0} color='error'>
                 <NotificationsIcon />
               </Badge>
             </IconButton>
             <IconButton
-              size='large'
+              size='medium'
               aria-label='account of current user'
               aria-controls={menuId}
               aria-haspopup='true'
               onClick={handleProfileMenuOpen}
-              sx={{ color: theme.palette.text.primary }}
+              sx={{ color: theme.palette.text.primary, transition: 'color 0.2s ease' }}
             >
               <AccountCircle />
             </IconButton>
-            <ThemeToggleSwitch onClick={colorMode.toggleColorMode} theme={theme} />
           </Box>
 
-          {/* mobile condensed tools (3 dots) */}
+          {/* condensed tools (3 dots) */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, padding: 1 }}>
             <IconButton
               size='large'
@@ -305,7 +346,7 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode }) => {
               aria-controls={mobileMenuId}
               aria-haspopup='true'
               onClick={handleMobileMenuOpen}
-              sx={{ color: theme.palette.text.primary }}
+              sx={{ color: theme.palette.text.primary, transition: 'color 0.2s ease' }}
             >
               <MoreIcon />
             </IconButton>
@@ -313,94 +354,85 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode }) => {
 
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open} PaperProps={{ sx: { backgroundColor: theme.palette.background.default, borderRight: 0 }}}>
+
+      {/* side drawer */}
+      <Drawer variant="permanent" open={open} PaperProps={{ sx: { backgroundColor: theme.palette.background.default, transition: 'background 0.2s ease', borderRight: 0 } }}>
+        {/* drawer header */}
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             <ChevronLeftIcon />
           </IconButton>
         </DrawerHeader>
-        <List disablePadding>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+
+        {/* drawer hot bar items */}
+        <List sx={{ [theme.breakpoints.up('sm')]: { p: 0 } }}>
+          {['Job Listings', 'My Applications'].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}>
+                <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', color: theme.palette.text.primary, transition: 'color 0.2s ease' }}>
+                  {index < 1 && <SellOutlinedIcon />}
+                  {index > 0 && <DescriptionOutlinedIcon />}
                 </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0, color: theme.palette.text.primary, transition: 'color 0.2s ease' }} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
+
         <Divider />
-        <List disablePadding>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
+
+        {/* drawer utility items */}
+        <List sx={{ mt: 'auto', [theme.breakpoints.up('sm')]: { pb: '16px'} }}>
+          <ListItem key={0} disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              onClick={colorMode.toggleColorMode}
+              aria-label='Toggle light or dark mode'
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon sx={{
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+                color: theme.palette.text.primary,
+                transition: 'color 0.2s ease'
+              }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+                {theme.palette.mode === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+              </ListItemIcon>
+
+              <ListItemText primary={isDark ? 'Light Mode' : 'Dark Mode'} sx={{ opacity: open ? 1 : 0, color: theme.palette.text.primary, transition: 'color 0.2s ease' }} />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
+
+      {/* body content */}
+      <Main>
+        <Box component='div' sx={{ p: 2, minWidth: '100%' }}>
+
+        </Box>
+      </Main>
+
+      {/* bottom padding */}
+      <BottomPadding />
+      {/* right padding */}
+      <RightPadding />
+
+      {/* render pop up menus */}
       {renderMobileMenu}
       {renderMenu}
-      <Box component="main" sx={{ flexGrow: 1, p: 2, py: 9.5 }}>
-        
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-          enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-          imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-          Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-          Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-          nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-          leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-          feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-          consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-          sapien faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
-          eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
-          neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra
-          tellus. Purus sit amet volutpat consequat mauris. Elementum eu facilisis
-          sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi
-          tincidunt ornare massa eget egestas purus viverra accumsan in. In hendrerit
-          gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-          et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis
-          tristique sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
-      </Box>
+
+      {/* render snackbar pop ups */}
+      <Snackbar open={alert} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Signed in as {accountType}
+        </Alert>
+      </Snackbar>
+
     </Box>
   );
 }

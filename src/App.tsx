@@ -1,28 +1,16 @@
 import React from 'react';
-import Box from '@mui/material/Box';
 import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
 import Header from './components/Header'
 
 // initial toggleColorMode context
 const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
 
-// base app
+// layout
 const App = () => {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        bgcolor: 'background.paper',
-        color: 'text.primary',
-        transition: 'cubic-bezier(0.4, 0, 0.2, 1)',
-        transitionDuration: '150ms'
-      }}
-    >
-      <Header theme={theme} colorMode={colorMode} />
-    </Box>
+    <Header theme={theme} colorMode={colorMode} />
   );
 }
 
@@ -54,20 +42,21 @@ const ToggleColorMode = () => {
         },
         secondary: {
           main: '#88C0D0',
-          ...(mode === 'dark' && { main: '#88C0D0'})
+          ...(mode === 'dark' && { main: '#B2AEFF'})
         },
         background: {
           default: '#f8f9fB',
-          ...(mode === 'dark' && { default: '#2E3440' }),
+          ...(mode === 'dark' && { default: '#121212' }),
           paper: '#efefef',
-          ...(mode === 'dark' && { paper: '#1d1d1d' })
+          ...(mode === 'dark' && { paper: '#202325' })
         },
         text: {
           primary: '#1a1a1a',
           ...(mode === 'dark' && { primary: '#f8f9fB' }),
           secondary: '#4f4f4f',
           ...(mode === 'dark' && { secondary: '#e4e8ef' }),
-        }
+        },
+        
       },
     }),
     [mode],
