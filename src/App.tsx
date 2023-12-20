@@ -1,18 +1,63 @@
-import React from 'react';
+import * as React from 'react';
 import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
-import Header from './components/Header'
+import Box from '@mui/material/Box';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import SideDrawer from './components/Drawer/SideDrawer';
+import Header from './components/Header/Header';
 
-// initial toggleColorMode context
+// initialize toggleColorMode as empty function
 const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
-
-// layout
 const App = () => {
+  // state variables
+  const [isDark, setIsDark] = React.useState<Boolean>(document.documentElement.classList.contains('dark'))
+  const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false)
+  const [accountType, setAccountType] = React.useState<string>('Candidate')
+  const [alert, setAlert] = React.useState<boolean>(false)
+  
+  // keep track of theme mode
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
+  React.useEffect(() => { setIsDark(theme.palette.mode === 'dark' ? true : false) }, [theme.palette.mode])
+
+  // interactivity functions
+  const handleDrawerOpen = () => setDrawerOpen(true)
+  const handleDrawerClose = () => setDrawerOpen(false)
+
+  // client/candidate account switch
+  const handleSwitchAccount = () => {
+    setAlert(true)
+    setAccountType((prevState) => prevState === 'Candidate' ? 'Client' : 'Candidate')
+  }
+
+  // close snackbar pop-ups
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => { 
+    if (reason === 'clickaway') return
+    setAlert(false) 
+  }
+
   return (
-    <Header theme={theme} colorMode={colorMode} />
+    <Box sx={{ display: 'flex', height: '100%', backgroundColor: theme.palette.background.default, }}>
+      {/* top navigation */}
+      <Header theme={theme} colorMode={colorMode} isDark={isDark} drawerOpen={drawerOpen} handleDrawerOpen={handleDrawerOpen} handleSwitchAccount={handleSwitchAccount} />
+      {/* side drawer */}
+      <SideDrawer theme={theme} colorMode={colorMode} drawerOpen={drawerOpen} handleDrawerClose={handleDrawerClose} accountType={accountType} />
+      {/* body content */}
+      <Box component='main' sx={{ flexGrow: 1, border: `1px solid ${theme.palette.divider}`, backgroundColor: theme.palette.background.paper, borderTopLeftRadius: 7, marginTop: '64px' }}>
+        <Box component='div' sx={{ p: 2, minWidth: '100%' }}>
+
+        </Box>
+      </Box>
+      {/* render snackbar account switch pop-ups */}
+      <Snackbar open={alert} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Signed in as {accountType}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 }
+
 
 // Light/dark theme toggle
 const ToggleColorMode = () => {
@@ -36,13 +81,13 @@ const ToggleColorMode = () => {
         mode,
         primary: {
           main: '#d9d9d9',
-          ...(mode === 'dark' && { main: '#d9d9d9'}),
+          ...(mode === 'dark' && { main: '#d9d9d9' }),
           light: '#c9c9c9',
-          ...(mode === 'dark' && { light: '#3B4252'})
+          ...(mode === 'dark' && { light: '#3B4252' })
         },
         secondary: {
-          main: '#88C0D0',
-          ...(mode === 'dark' && { main: '#B2AEFF'})
+          main: '#81A1C1',
+          light: '#e0efff',
         },
         background: {
           default: '#f8f9fB',
@@ -56,7 +101,7 @@ const ToggleColorMode = () => {
           secondary: '#4f4f4f',
           ...(mode === 'dark' && { secondary: '#e4e8ef' }),
         },
-        
+
       },
     }),
     [mode],

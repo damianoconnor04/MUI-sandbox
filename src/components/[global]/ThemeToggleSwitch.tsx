@@ -9,12 +9,13 @@ import { Theme } from '@mui/material';
 interface ThemeToggleSwitchProps {
   theme: Theme;
   onClick?: () => void;
+  size?: 'small' | 'medium' | 'large' | null
 }
 
 // render light/dark toggle button
-const ThemeToggleSwitch: React.FC<ThemeToggleSwitchProps> = ({ theme, onClick }) => {
+const ThemeToggleSwitch: React.FC<ThemeToggleSwitchProps> = ({ theme, onClick, size }) => {
   return (
-    <IconButton size="medium" aria-label='Toggle light or dark mode' onClick={onClick} sx={{ color: theme.palette.text.primary }}>
+    <IconButton size={size !== null ? size : 'medium'} aria-label='Toggle light or dark mode' onClick={onClick} sx={{ color: theme.palette.text.primary }}>
       {theme.palette.mode === 'dark' ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
     </IconButton>
   )
