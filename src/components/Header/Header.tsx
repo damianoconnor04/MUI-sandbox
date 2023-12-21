@@ -11,10 +11,11 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircleOutlined';
-import NotificationsIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import NotificationsIcon from '@mui/icons-material/NotificationsNoneRounded';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
 import ThemeToggleSwitch from '../[global]/ThemeToggleSwitch';
 import LeapLogo from '../[global]/assets/LeapLogo';
+import taco from '../[global]/assets/tacobell.webp'
 
 // app bar styling
 const drawerWidth = 240;
@@ -45,6 +46,7 @@ const Search = styled('div')(({ theme }) => ({
   transition: 'background 100ms linear',
   margin: 0,
   width: '100%',
+  boxShadow: '0px 1px 4px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.06),0px 1px 5px 0px rgba(0,0,0,0.06)',
   [theme.breakpoints.up('sm')]: { width: 'auto' },
 }));
 // search icon styling
@@ -79,8 +81,9 @@ interface HeaderProps {
   drawerOpen: boolean;
   handleDrawerOpen: () => void;
   handleSwitchAccount: () => void;
+  accountType: string;
 }
-const Header: React.FC<HeaderProps> = ({ theme, colorMode, isDark, drawerOpen, handleDrawerOpen, handleSwitchAccount }) => {
+const Header: React.FC<HeaderProps> = ({ theme, colorMode, isDark, drawerOpen, handleDrawerOpen, handleSwitchAccount, accountType }) => {
   // state variables & bools
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -187,14 +190,7 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode, isDark, drawerOpen, h
           </Box>
 
           {/* logo */}
-          {/* <Box component='img' alt='LEAP Logo' src={isDark ? logoWhite : logoBlack}
-            sx={{
-              padding: 0,
-              height: 40,
-              [theme.breakpoints.down('sm')]: { display: 'none' },
-            }}
-          /> */}
-          <Box component='div' sx={{ width: '120px', [theme.breakpoints.down('sm')]: { display: 'none '}}}>
+          <Box component='a' href='/' sx={{ width: '120px', [theme.breakpoints.down('sm')]: { display: 'none '}}}>
             <LeapLogo fillColor={isDark ? '#f8f9fB' : '#121212'}/>
           </Box>
 
@@ -228,7 +224,7 @@ const Header: React.FC<HeaderProps> = ({ theme, colorMode, isDark, drawerOpen, h
               onClick={handleProfileMenuOpen}
               sx={{ color: theme.palette.text.primary, }}
             >
-              <AccountCircle />
+              {accountType === 'Candidate' ? <AccountCircle /> : <Box component='img' alt='profile picture' src={taco} width='1.5rem' height='1.5rem' sx={{ borderRadius: '50%' }} />}
             </IconButton>
           </Box>
 

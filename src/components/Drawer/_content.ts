@@ -10,13 +10,15 @@ export const candidateItems = [
     'icon': SellOutlinedIcon,
     'filledIcon': SellIcon,
     'label': 'Job Listings',
-    'ref': 'jobs'
+    'ref': 'jobs',
+    'slug': '/'
   },
   {
     'icon': DescriptionOutlinedIcon,
     'filledIcon': DescriptionIcon,
     'label': 'My Applications',
-    'ref': 'my-applications'
+    'ref': 'my-applications',
+    'slug': '/'
   },
 ]
 export const clientItems = [
@@ -24,18 +26,21 @@ export const clientItems = [
     'icon': SellOutlinedIcon,
     'filledIcon': SellIcon,
     'label': 'My Listings',
-    'ref': 'listings'
+    'ref': 'listings',
+    'slug': '/listings'
   },
   {
     'icon': DescriptionOutlinedIcon,
     'filledIcon': DescriptionIcon,
     'label': 'Applications',
-    'ref': 'applications'
+    'ref': 'applications',
+    'slug': '/applications'
   },
   {
     'icon': AnalyticsOutlinedIcon,
     'filledIcon': AnalyticsIcon,
     'label': 'Analytics',
-    'ref': 'analytics'
+    'ref': 'analytics',
+    'slug': '/analytics'
   },
 ]

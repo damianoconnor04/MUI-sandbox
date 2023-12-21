@@ -69,14 +69,15 @@ interface SideDrawerProps {
   drawerOpen: boolean;
   handleDrawerClose: () => void;
   accountType: string;
+  currentTab?: string;
 }
-const SideDrawer: React.FC<SideDrawerProps> = ({ theme, colorMode, drawerOpen, handleDrawerClose, accountType }) => {
-  const [activeTab, setActiveTab] = React.useState<String>('')
+const SideDrawer: React.FC<SideDrawerProps> = ({ theme, colorMode, drawerOpen, handleDrawerClose, accountType, currentTab }) => {
+  const [activeTab, setActiveTab] = React.useState<String>(currentTab || '')
   const [hoveredTab, setHoveredTab] = React.useState<String>('')
 
   return (
     // side drawer
-    <Drawer variant="permanent" open={drawerOpen} PaperProps={{ sx: { backgroundColor: theme.palette.background.default, borderRight: 0 } }}>
+    <Drawer variant="permanent" open={drawerOpen} PaperProps={{ sx: { backgroundColor: theme.palette.background.default, borderRight: 0, } }}>
       {/* drawer header */}
       <DrawerHeader>
         <IconButton onClick={handleDrawerClose}>
@@ -86,11 +87,12 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ theme, colorMode, drawerOpen, h
 
       {/* drawer hot bar items */}
       <List sx={{ [theme.breakpoints.up('sm')]: { p: 0 } }}>
-        {(accountType === 'Client' ? clientItems : candidateItems).map(({ icon, filledIcon, label, ref }, idx) => (
+        {(accountType === 'Client' ? clientItems : candidateItems).map(({ icon, filledIcon, label, ref, slug }, idx) => (
           <ListItem key={ref} disablePadding onMouseEnter={() => setHoveredTab(ref)} onMouseLeave={() => setHoveredTab('')}>
-            {hoveredTab === ref && <Box component='div' sx={{ position: 'absolute', height: '100%', width: '2px', backgroundColor: theme.palette.secondary.main }} /> }
+            {hoveredTab === ref && <Box component='div' sx={{ position: 'absolute', height: '100%', width: '3px', backgroundColor: theme.palette.secondary.main }} /> }
+            {activeTab === ref && <Box component='div' sx={{ position: 'absolute', height: '100%', width: '3px', backgroundColor: theme.palette.secondary.main }} /> }
             
-            <ListItemButton onClick={() => setActiveTab(ref)} sx={{ minHeight: 48, justifyContent: drawerOpen ? 'initial' : 'center', px: 2.5, borderTopRightRadius: idx === 0 ? '7px' : 0, }}>
+            <ListItemButton href={slug} onClick={() => setActiveTab(ref)} sx={{ minHeight: 48, justifyContent: drawerOpen ? 'initial' : 'center', px: 2.5, borderTopRightRadius: idx === 0 ? '7px' : 0, }}>
               <ListItemIcon sx={{ minWidth: 0, mr: drawerOpen ? 3 : 'auto', justifyContent: 'center', color: theme.palette.text.primary, }}>
                 {activeTab === ref ? React.createElement(filledIcon) : React.createElement(icon)}
               </ListItemIcon>
@@ -107,7 +109,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ theme, colorMode, drawerOpen, h
       */}
       {accountType === 'Client' && (
         <Box sx={{ my: '1rem', display: 'grid', placeItems: 'center', px: drawerOpen ? '1rem' : 0 }}>
-          <Button startIcon={drawerOpen ? <EditRoundedIcon /> : ''} variant={drawerOpen ? 'text' : 'outlined'} color='secondary' aria-label='create new job listing' sx={drawerOpen ? { borderRadius: '7px', p: 1, width: '100%', border: `1px solid ${alpha(theme.palette.secondary.main, 0.5)}`} : { borderRadius: 9999, p: 1, minWidth: 0 }}>
+          <Button startIcon={drawerOpen ? <EditRoundedIcon /> : ''} variant={drawerOpen ? 'text' : 'outlined'} color='secondary' aria-label='create new job listing' sx={drawerOpen ? { borderRadius: '7px', p: 1, width: '100%', border: `1px solid ${alpha(theme.palette.secondary.main, 0.5)}`} : { boxShadow: theme.shadows[3], borderRadius: 9999, p: 1, minWidth: 0 }}>
             {drawerOpen ? 'new listing' : <EditRoundedIcon sx={{ fontSize: '24px' }}/>}
           </Button>
         </Box>
@@ -115,7 +117,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ theme, colorMode, drawerOpen, h
 
       {/* drawer utility items */}
       <Box component='div' sx={{ mt: 'auto', display: 'grid', placeItems: 'center', mb: '0.5rem' }}>
-        <ThemeToggleSwitch theme={theme} onClick={colorMode.toggleColorMode} size='large' />
+        <ThemeToggleSwitch theme={theme} onClick={colorMode.toggleColorMode} size='medium' />
       </Box>
     </Drawer>
   )

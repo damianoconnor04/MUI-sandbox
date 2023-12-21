@@ -3,8 +3,9 @@ import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import SideDrawer from './components/Drawer/SideDrawer';
-import Header from './components/Header/Header';
+import SideDrawer from '../components/Drawer/SideDrawer';
+import Header from '../components/Header/Header';
+import AccountSwitchToast from '../components/[global]/AccountSwitchToast';
 
 // initialize toggleColorMode as empty function
 const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
@@ -14,7 +15,7 @@ const App = () => {
   const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false)
   const [accountType, setAccountType] = React.useState<string>('Candidate')
   const [alert, setAlert] = React.useState<boolean>(false)
-  
+
   // keep track of theme mode
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
@@ -31,17 +32,17 @@ const App = () => {
   }
 
   // close snackbar pop-ups
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => { 
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') return
-    setAlert(false) 
+    setAlert(false)
   }
-
+ 
   return (
     <Box sx={{ display: 'flex', height: '100%', backgroundColor: theme.palette.background.default, }}>
       {/* top navigation */}
-      <Header theme={theme} colorMode={colorMode} isDark={isDark} drawerOpen={drawerOpen} handleDrawerOpen={handleDrawerOpen} handleSwitchAccount={handleSwitchAccount} />
+      <Header theme={theme} colorMode={colorMode} isDark={isDark} drawerOpen={drawerOpen} handleDrawerOpen={handleDrawerOpen} handleSwitchAccount={handleSwitchAccount} accountType={accountType} />
       {/* side drawer */}
-      <SideDrawer theme={theme} colorMode={colorMode} drawerOpen={drawerOpen} handleDrawerClose={handleDrawerClose} accountType={accountType} />
+      <SideDrawer currentTab='' theme={theme} colorMode={colorMode} drawerOpen={drawerOpen} handleDrawerClose={handleDrawerClose} accountType={accountType} />
       {/* body content */}
       <Box component='main' sx={{ flexGrow: 1, border: `1px solid ${theme.palette.divider}`, backgroundColor: theme.palette.background.paper, borderTopLeftRadius: 7, marginTop: '64px' }}>
         <Box component='div' sx={{ p: 2, minWidth: '100%' }}>
@@ -49,11 +50,7 @@ const App = () => {
         </Box>
       </Box>
       {/* render snackbar account switch pop-ups */}
-      <Snackbar open={alert} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          Signed in as {accountType}
-        </Alert>
-      </Snackbar>
+      <AccountSwitchToast alert={alert} handleClose={handleClose} accountType={accountType} />
     </Box>
   );
 }
@@ -92,8 +89,8 @@ const ToggleColorMode = () => {
         background: {
           default: '#f8f9fB',
           ...(mode === 'dark' && { default: '#121212' }),
-          paper: '#efefef',
-          ...(mode === 'dark' && { paper: '#202325' })
+          paper: '#f1f3f9',
+          ...(mode === 'dark' && { paper: '#17191b' })
         },
         text: {
           primary: '#1a1a1a',
