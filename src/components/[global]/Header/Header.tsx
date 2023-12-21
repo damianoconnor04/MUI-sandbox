@@ -13,9 +13,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircleOutlined';
 import NotificationsIcon from '@mui/icons-material/NotificationsNoneRounded';
 import MoreIcon from '@mui/icons-material/MoreHoriz';
-import ThemeToggleSwitch from '../[global]/ThemeToggleSwitch';
-import LeapLogo from '../[global]/assets/LeapLogo';
-import taco from '../[global]/assets/tacobell.webp'
+import ThemeToggleSwitch from '../ThemeToggleSwitch';
+import LeapLogo from '../assets/LeapLogo';
+import taco from '../assets/tacobell.webp'
 
 // app bar styling
 const drawerWidth = 240;

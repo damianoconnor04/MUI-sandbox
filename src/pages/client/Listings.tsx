@@ -2,10 +2,8 @@ import * as React from 'react';
 import { useTheme, ThemeProvider } from '@mui/material/styles';
 import { PaletteMode } from '@mui/material';
 import Box from '@mui/material/Box';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import SideDrawer from '../../components/Drawer/SideDrawer';
-import Header from '../../components/Header/Header';
+import SideDrawer from '../../components/[global]/Drawer/SideDrawer';
+import Header from '../../components/[global]/Header/Header';
 import { useCustomTheme } from '../../components/[global]/theme';
 import AccountSwitchToast from '../../components/[global]/AccountSwitchToast';
 

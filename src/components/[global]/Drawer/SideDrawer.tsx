@@ -10,9 +10,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { candidateItems, clientItems } from './_content'
-import AddRounded from '@mui/icons-material/AddRounded';
 import Button from '@mui/material/Button';
-import ThemeToggleSwitch from '../[global]/ThemeToggleSwitch';
+import ThemeToggleSwitch from '../ThemeToggleSwitch';
 import Box from '@mui/material/Box'
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 

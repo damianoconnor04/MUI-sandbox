@@ -7,6 +7,7 @@ interface AccountSwitchToastProps {
   handleClose: () => void;
   accountType: string;
 }
+
 const AccountSwitchToast: React.FC<AccountSwitchToastProps> = ({ alert, handleClose, accountType }) => {
   return (
     <Snackbar open={alert} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
